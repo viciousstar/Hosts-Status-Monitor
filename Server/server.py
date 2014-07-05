@@ -57,7 +57,10 @@ class GetPostHandler(BaseHTTPRequestHandler):
         elif 'info' in self.path:
             info(self)   
         else:
-            self.wfile.write('404 can\'t find \''+self.path+'\'')
+            fileHandle = open ( self.path.lstrip('/') )
+            for content in fileHandle:
+                self.wfile.write(content)
+            fileHandle.close()
         return
 
 def mainpage(obj):
