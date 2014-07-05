@@ -70,7 +70,7 @@ def mainpage(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
-    for i in range[cnt()]
+    for i in range(0,cnt()):
         fileHandle = open ( './view/simple.html' )
         for content in fileHandle:
             obj.wfile.write(content)
@@ -89,11 +89,12 @@ def info(obj):
     fileHandle.close()
     return
 
-def ajaxget():
-    return '{}'
+def ajaxget(obj):
+    obj.wfile.write('{"cpu":20,"io":30,"rem":40}')
+    return
 
 def cnt():
-    return 3
+    return 1
 
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer

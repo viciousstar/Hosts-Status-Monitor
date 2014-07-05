@@ -10,10 +10,24 @@
 				<script>
 				function ajaxget(){
 					Ajax().get("ajaxget",function(data){
-										document.getElementById("msg").innerHTML=data;
-									});
+						data=eval('('+data+')');
+						cpu=document.getElementById("1cpu");
+						cpu.innerHTML=data.cpu+'%';
+						cpu['aria-valuenow']=data.cpu ;
+						cpu.style='width: '+data.cpu+'%;';
+						io=document.getElementById("1io");
+						io.innerHTML=data.io+'%';
+						io['aria-valuenow']=data.io ;
+						io.style='width: '+data.io+'%;';
+						rem=document.getElementById("1rem");
+						rem.innerHTML=data.rem+'%';
+						rem['aria-valuenow']=data.rem ;
+						rem.style='width: '+data.rem+'%;';
+
+					});
 				}
 				</script>
 	</head>
 	<body>
+		<button onclick="ajaxget()">Refresh</button>
 		<div style='margin:40px'>
