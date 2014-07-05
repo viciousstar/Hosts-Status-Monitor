@@ -1,12 +1,18 @@
 # -*- coding:utf-8 -*-
+'''
+
+'''
 from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi 
 import config
 import urlparse
+import psutil
+from subprocess import PIPE
+import  json
 
 class GetPostHandler(BaseHTTPRequestHandler):
-    def do_POST(self): #还是重写这个方法
-        form = cgi.FieldStorage(  #cgi.FieldStorage实例效果类似一个字典，包含键－值和len等内置函数
+    def do_POST(self):
+        form = cgi.FieldStorage(
         fp=self.rfile,
         headers=self.headers,
         environ={'REQUEST_METHOD':'POST',
@@ -24,10 +30,10 @@ class GetPostHandler(BaseHTTPRequestHandler):
             self.wfile.write('\t%s=%s\n' % (field, form[field].value)) 
         return
 
-    def do_GET(self):   #重写这个方法
+    def do_GET(self):
         parsed_path = urlparse.urlparse(self.path)
-        # message_parts = [  #建立一个想要返回的列表
-        #         'CLIENT VALUES:',    #客户端信息
+        # message_parts = [  
+        #         'CLIENT VALUES:',    
         #         'client_address=%s (%s)' % (self.client_address,
         #                                     self.address_string()),  #返回客户端的地址和端口
         #         'command=%s' % self.command,  #返回操作的命令，这里比然是'get'
@@ -75,7 +81,8 @@ def mainpage(obj):
         for content in fileHandle:
  
             content=content.replace('CPUID',name+'cpu')
-            content=content.replace('IOID',name+'io')
+            content=content.replace('IORID',name+'ior')
+            content=content.replace('IOWID',name+'iow')
             content=content.replace('MEMID',name+'mem')
             content=content.replace('NAME',name)
             obj.wfile.write(content)
@@ -92,17 +99,26 @@ def info(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
+
+    fileHandle = open ( './view/footer.html' )
+    for content in fileHandle:
+        obj.wfile.write(content)
+    fileHandle.close()
     return
 
 def ajaxget(obj):
-    obj.wfile.write('{"name1":{CPU:20,io:30,rem:40}}')
+    cpu_percent = psutil.cpu_percent(interval = 1)
+    mer_percent = psutil.virtual_memory().percent
+    io_radio = psutil.disk_io_counters()
+    io_radio_read, io_radio_write = io_radio.read_bytes, io_radio.write_bytes
+    info='{"name1":{CPU:20,iow:3000000000,ior:2000000000,rem:40}}'
+    info='{"localhost":{CPU:'+str(cpu_percent)+',iow:'+str(io_radio_write)+',ior:'+str(io_radio_read)+',rem:'+str(mer_percent)+'},'+info.lstrip('{')
+    obj.wfile.write(info)
     return
 
-def cnt():
-    return 1
 
 def getname():
-    return ['name1','n2','n3','n4']
+    return ['localhost','name1','n3','n4']
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 

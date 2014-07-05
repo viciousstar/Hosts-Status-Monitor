@@ -15,8 +15,15 @@
 							cpu=document.getElementById(i+"cpu");
 							cpu.innerHTML=data[i].CPU+'%';
 							cpu.style='width: '+data[i].CPU+'%;';
-							io=document.getElementById(i+"io");
-							io.innerHTML=data[i].io+'byte';
+
+							ior=document.getElementById(i+"iow");
+							ior.innerHTML=data[i].iow+'byte';
+							ior.style='width: '+data[i].iow/50000000+'%;';
+
+							iow=document.getElementById(i+"ior");
+							iow.innerHTML=data[i].ior+'byte';
+							iow.style='width: '+data[i].ior/50000000+'%;';
+
 							mem=document.getElementById(i+"mem");
 							mem.innerHTML=data[i].rem+'%';
 							mem.style='width: '+data[i].rem+'%;';

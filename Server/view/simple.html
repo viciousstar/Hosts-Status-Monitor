@@ -1,6 +1,6 @@
 <div class="panel panel-primary">
   <div class="panel-heading">
-    <h3 class="panel-title">NAME</h3>
+    <h3 class="panel-title">NAME<a class="btn btn-primary" href="/info/NAME">infopage</a></h3>
   </div>
   <div class="panel-body">
 	    CPU:<div class="progress">
@@ -8,9 +8,19 @@
 			    2%
 			  </div>
 			</div>
-		IO负载:<div id='IOID'>
-				byte
+		IO负载:<br>
+		读
+		<div class="progress">
+			  <div id='IORID' class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
+			    2byte
+			  </div>
 			</div>
+		写
+		<div class="progress">
+			<div id='IOWID' class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
+			    2byte
+			</div>
+		</div>
 
 		内存:<div class="progress">
 			  <div id='MEMID' class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
