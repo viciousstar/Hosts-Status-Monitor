@@ -70,9 +70,14 @@ def mainpage(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
-    for i in range(0,cnt()):
+    for name in getname():
         fileHandle = open ( './view/simple.html' )
         for content in fileHandle:
+ 
+            content=content.replace('CPUID',name+'cpu')
+            content=content.replace('IOID',name+'io')
+            content=content.replace('MEMID',name+'mem')
+            content=content.replace('NAME',name)
             obj.wfile.write(content)
         fileHandle.close()
 
@@ -90,12 +95,14 @@ def info(obj):
     return
 
 def ajaxget(obj):
-    obj.wfile.write('{"cpu":20,"io":30,"rem":40}')
+    obj.wfile.write('{"name1":{CPU:20,io:30,rem:40}}')
     return
 
 def cnt():
     return 1
 
+def getname():
+    return ['name1','n2','n3','n4']
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 

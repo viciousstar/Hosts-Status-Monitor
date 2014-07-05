@@ -9,19 +9,17 @@
 		<script src="tool/ajax3.0.js"></script>
 				<script>
 				function ajaxget(){
-					Ajax().get("ajaxget",function(dataall){
-						dataall=eval('('+dataall+')');
-						for(data in dataall){
-							cpu=document.getElementById("1cpu");
-							cpu.innerHTML=data.cpu+'%';
-							cpu['aria-valuenow']=data.cpu ;
-							cpu.style='width: '+data.cpu+'%;';
-							io=document.getElementById("1io");
-							io.innerHTML=data.io+'byte';
-							rem=document.getElementById("1rem");
-							rem.innerHTML=data.rem+'%';
-							rem['aria-valuenow']=data.rem ;
-							rem.style='width: '+data.rem+'%;';
+					Ajax().get("ajaxget",function(data){
+						data=eval('('+data+')');
+						for(var i in data){
+							cpu=document.getElementById(i+"cpu");
+							cpu.innerHTML=data[i].CPU+'%';
+							cpu.style='width: '+data[i].CPU+'%;';
+							io=document.getElementById(i+"io");
+							io.innerHTML=data[i].io+'byte';
+							mem=document.getElementById(i+"mem");
+							mem.innerHTML=data[i].rem+'%';
+							mem.style='width: '+data[i].rem+'%;';
 						}
 
 					});
