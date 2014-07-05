@@ -5,9 +5,7 @@
 '''
 import pymongo
 
-con = pymongo.Connection('localhost',27017)
-db = con['hoststatus']
-history = db['history']
+db = pymongo.Connection('localhost',27017)['hoststatus']
 
 def init():
 	#history.ensure_index('x',pymongo.DESCENDING)

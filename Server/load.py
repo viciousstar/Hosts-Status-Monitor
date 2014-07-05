@@ -12,7 +12,8 @@ def allinfo():
 	return forall(readlastone,{})
 def getallname():
 	return filter(lambda x: x not in ['system.indexes'],db.collection_names())
-	
+def getcount(name):
+	return db[name].count
 #small funcs
 def forall(Zfunction,data):
 	return [Zfunction(args) for args in (addId(i)(data) for i in db.collection_names() if i not in ['system.indexes'])]
@@ -37,4 +38,8 @@ def readonewithname(Zfileter):
 def readlastone(Zfilter):
 	a = readonewithname(Zfilter)
 	return a.values()[0]
-
+def getext(name,column,Zfilter = {}):
+	a = lambda x:db[name].find(Zfilter).sort(column,x).next()[column]
+	return a(1),a(-1)
+def count(name):
+	return db[name].count()
