@@ -11,9 +11,6 @@ db = con['hoststatus']
 history = db['history']
 
 def load(data):
-	data = listify(data)
-	map(addTimeStamp,data)
-	history.insert(data)
-	pass
+	return history.find({'name':data}).sort('time',pymongo.DESCENDING).limit(30)
 	
 #small funcs
