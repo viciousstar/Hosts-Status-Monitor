@@ -56,6 +56,8 @@ class GetPostHandler(BaseHTTPRequestHandler):
             mainpage(self)
         elif 'info' in self.path:
             info(self)   
+        elif 'ajaxget' in self.path:
+            ajaxget(self)  
         else:
             fileHandle = open ( self.path.lstrip('/') )
             for content in fileHandle:
@@ -68,10 +70,12 @@ def mainpage(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
-    fileHandle = open ( './view/simple.html' )
-    for content in fileHandle:
-        obj.wfile.write(content)
-    fileHandle.close()
+    for i in range[cnt()]
+        fileHandle = open ( './view/simple.html' )
+        for content in fileHandle:
+            obj.wfile.write(content)
+        fileHandle.close()
+
     fileHandle = open ( './view/footer.html' )
     for content in fileHandle:
         obj.wfile.write(content)
@@ -85,7 +89,11 @@ def info(obj):
     fileHandle.close()
     return
 
+def ajaxget():
+    return '{}'
 
+def cnt():
+    return 3
 
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
