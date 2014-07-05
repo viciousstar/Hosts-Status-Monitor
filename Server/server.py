@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-
+Author:Liu
 '''
 from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi 
@@ -8,7 +8,31 @@ import config
 import urlparse
 import psutil
 from subprocess import PIPE
-import  json
+import  json 
+
+
+import thread 
+import SocketServer
+# import save 
+class MyTCPHandler(SocketServer.BaseRequestHandler):
+    '''for receive data'''
+    def handle(self):           
+        self.data = self.request.recv(1024).strip()
+        print "{} wrote:".format(self.client_address[0])
+        print self.data
+        # save.save(self.data)
+        self.request.sendall('watching')
+
+
+def receiver():  
+    '''receive data as a function in a thread'''
+    HOST, PORT = "localhost", 10000
+    server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
+    print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
+    server.serve_forever()
+     
+ 
+
 
 class GetPostHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -128,5 +152,6 @@ def getname():
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 
+    thread.start_new_thread(receiver, ())  
     print 'Starting server at %d, use <Ctrl-C> to stop' %config.PORT
     server.serve_forever()  #保存程序一直运行
