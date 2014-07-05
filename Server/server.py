@@ -68,6 +68,14 @@ def mainpage(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
+    fileHandle = open ( './view/simple.html' )
+    for content in fileHandle:
+        obj.wfile.write(content)
+    fileHandle.close()
+    fileHandle = open ( './view/footer.html' )
+    for content in fileHandle:
+        obj.wfile.write(content)
+    fileHandle.close()
     return
 
 def info(obj):
