@@ -76,6 +76,10 @@ def mainpage(obj):
     for content in fileHandle:
         obj.wfile.write(content)
     fileHandle.close()
+    fileHandle = open ( './view/localhost.html' )
+    for content in fileHandle:
+        obj.wfile.write(content)
+    fileHandle.close()
     for name in getname():
         fileHandle = open ( './view/simple.html' )
         for content in fileHandle:
@@ -118,7 +122,9 @@ def ajaxget(obj):
 
 
 def getname():
-    return ['localhost','name1','n3','n4']
+    return ['name1','n3','n4']
+
+
 if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 
