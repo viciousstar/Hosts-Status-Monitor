@@ -6,15 +6,28 @@
         <link rel="stylesheet" type="text/css" href="tool/bs/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="tool/bs/css/bootstrap-theme.css">
 	    <link rel="stylesheet" type="text/css" href="tool/mytheme.css">
-		<!--<script src="/../tool/ajax3.0.js"></script>
+		<script src="tool/ajax3.0.js"></script>
 				<script>
-					Ajax().get("<{$app}>/message/getnum",function(data){
-										document.getElementById("msg").innerHTML=data;
-									});
-					Ajax().get("<{$app}>/message/getindentnum",function(data){
-								document.getElementById("indentmsg").innerHTML=data;
-							});
-				</script>-->
+				function ajaxget(){
+					Ajax().get("ajaxget",function(dataall){
+						dataall=eval('('+dataall+')');
+						for(data in dataall){
+							cpu=document.getElementById("1cpu");
+							cpu.innerHTML=data.cpu+'%';
+							cpu['aria-valuenow']=data.cpu ;
+							cpu.style='width: '+data.cpu+'%;';
+							io=document.getElementById("1io");
+							io.innerHTML=data.io+'byte';
+							rem=document.getElementById("1rem");
+							rem.innerHTML=data.rem+'%';
+							rem['aria-valuenow']=data.rem ;
+							rem.style='width: '+data.rem+'%;';
+						}
+
+					});
+				}
+				</script>
 	</head>
 	<body>
+		<button onclick="ajaxget()">Refresh</button>
 		<div style='margin:40px'>
