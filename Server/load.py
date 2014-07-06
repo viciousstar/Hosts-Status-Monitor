@@ -9,7 +9,7 @@ import time
 db = pymongo.Connection('localhost',27017)['hoststatus']
 
 def allinfo():
-	return formalize(forall(readlastone,{}))
+	return mapfordict(reducer,formalize(forall(readonewithname,{'archivelabel':'none'})))
 def getallname():
 	return filter(lambda x: x not in ['system.indexes'],db.collection_names())
 def getcount(name):
@@ -19,8 +19,8 @@ def forall(Zfunction,data):
 	return [Zfunction(args) for args in (addId(i)(data) for i in db.collection_names() if i not in ['system.indexes'])]
 def formalize(o): #把列表形式的东西搞成字典型，便于前台展示
 	p = {}
-	def f(a): p[a[0]] = a[1]
-	map(f,(dealId(data) for data in o))
+	def addtop(x) : p[x[0]] = x[1]
+	map(addtop,((p,i[p]) for i in o for p in i))
 	return p
 def addId(name):
 	def l(o):
@@ -49,7 +49,13 @@ def getext(name,column,Zfilter = {}):
 def count(name):
 	return db[name].count()
 def reducer(o):
-	pass
+	def popit(x):
+		if x in o : o.pop(x)
+	for i in ['time','daytime','hourtime','_id','archivelabel'] : popit(i)
+def mapfordict(f,d):
+	for i in d:
+		f(d[i])
+	return d
 #以下是这个部分最恶心的函数，返回值是一个生成生成某列值相等的记录的生成器的生成器←_←
 def popby(name,column,Zfilter = {}):
 	cursor = db[name].find(Zfilter).sort(column,pymongo.DESCENDING)

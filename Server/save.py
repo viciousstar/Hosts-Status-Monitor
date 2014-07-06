@@ -12,6 +12,7 @@ db = pymongo.Connection('localhost',27017)['hoststatus']
 def save(data):
 	data = listify(data)
 	map(addTimeStamp,data)
+	map(addArchiveLabel,data)
 	insert(data)
 	return True
 	
