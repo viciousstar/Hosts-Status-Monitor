@@ -12,10 +12,9 @@ import  json
 import socket
 import threading
 
-
 class Monitor():
 	inte = 5
-	port = 9999
+	port = 10001
 	host = "localhost"
 
 	def  send_sta(self):
@@ -28,7 +27,7 @@ class Monitor():
 			io_radio = psutil.disk_io_counters()
 			io_radio_read, io_radio_write = io_radio.read_bytes, io_radio.write_bytes
 			hostname = psutil.Popen("hostname", stdout = PIPE).communicate()[0].rstrip()  #remove the end '\n'
-			monitor = {"hostname": hostname, "cpu_percent": cpu_percent, "mer_percent": mer_percent, "io_radio_read": io_radio_read, "io_radio_write": io_radio_write}
+			monitor = {"hostname": hostname, "cpu": cpu_percent, "mem": mer_percent, "ior": io_radio_read, "iow": io_radio_write}
 			monitor_json = json.dumps(monitor)
 			s.sendall(monitor_json)
 			print "Send: " + monitor_json
@@ -46,11 +45,10 @@ class Monitor():
 				print "The changing speed is"  + str(self.inte)
 			else:
 				self.inte = 5
-				print self.inte
 
 	def  __init__(self, host, port):
 		self.host = host
-		self.prot = port
+		self.port = port
 		print "Connect to " + str(host) + ": " + str(port)
 		t1 = threading.Thread(target = self.rec_sta)
 		t1.start()
@@ -59,4 +57,8 @@ class Monitor():
 
 
 if  __name__ == "__main__":
+<<<<<<< HEAD
+	monitor  = Monitor("localhost", 10001)
+=======
 	monitor  = Monitor("127.0.0.1", 10000)
+>>>>>>> 5473f4188285b3c36ef6fd9a07e2217798477368

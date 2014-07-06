@@ -122,7 +122,7 @@
 				var info;
 				function ajaxget(){
 					Ajax().get("graphic/"+window.location.href.split('/')[4],function(data){
-						info=data	;
+						info=data;
 					});
 				}
 				window.onload=setTimeout("ajaxget()", 10 );
@@ -138,8 +138,8 @@
 		    </div>
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
-		        <li><a href="">DAY</a></li>
-		        <li><a href="#">HOUR</a></li>
+		        <li><a href="/info/NAME">DAY</a></li>
+		        <li><a href="/info/NAME/hour">HOUR</a></li>
 		       </ul>
 		   	</div>
 		  </div><!-- /.container-fluid -->
