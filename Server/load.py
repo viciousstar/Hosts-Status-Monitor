@@ -30,7 +30,7 @@ def getdaydata(name):
 	p = {}
 	for index,i in enumerate(cursor):
 		a = time.localtime(i['daytime'] * 3600 * 24)
-		n = str(a.tm_mon,a.tm_mday)[1:-1]
+		n = str((a.tm_mon,a.tm_mday))[1:-1]
 		p[n] = {}
 		for j in config.INFOS:
 			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]

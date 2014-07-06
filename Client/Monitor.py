@@ -67,5 +67,5 @@ def get_ip():
 	inet = psutil.Popen("ifconfig wlan0 | g")
 
 if  __name__ == "__main__":
-	Monitor("192.168.1.112", 10001)
+	Monitor("192.168.1.180", 10001)
 
