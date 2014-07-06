@@ -78,5 +78,4 @@ def popby(name,column,Zfilter = {}):
 					b[0] = b[1][column]
 					return
 		yield a()
-	
 		
