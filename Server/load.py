@@ -32,7 +32,7 @@ def dealId(data):
 def readintime(Zfilter,limits):
 	a,b = dealId(Zfilter)
 	return db[a].find(b).sort('time',pymongo.DESCENDING).limit(limits)
-def readonewithname(Zfileter):
+def readonewithname(Zfilter):
 	a,b = dealId(Zfilter)
 	return {a:db[a].find(b).sort('time',pymongo.DESCENDING).next()}
 def readlastone(Zfilter):

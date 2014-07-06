@@ -26,8 +26,10 @@ def listify(x):
 		return x
 	raise Error('传入数据有问题')
 def insert(x):
-	name = x['Id']
-	x.pop('Id')
-	db[name].insert(x)
+	map(lambda (name,o) : db[name].insert(o) ,[dealId(o) for o in x])
 	return True
 	
+def dealId(data):
+	name = data['Id']
+	data.pop('Id')
+	return name,data
