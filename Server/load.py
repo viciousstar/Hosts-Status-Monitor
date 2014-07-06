@@ -9,7 +9,7 @@ import time
 db = pymongo.Connection('localhost',27017)['hoststatus']
 
 def allinfo():
-	return forall(readlastone,{})
+	return formalize(forall(readlastone,{}))
 def getallname():
 	return filter(lambda x: x not in ['system.indexes'],db.collection_names())
 def getcount(name):
@@ -17,6 +17,11 @@ def getcount(name):
 #small funcs
 def forall(Zfunction,data):
 	return [Zfunction(args) for args in (addId(i)(data) for i in db.collection_names() if i not in ['system.indexes'])]
+def formalize(o): #把列表形式的东西搞成字典型，便于前台展示
+	p = {}
+	def f(a): p[a[0]] = a[1]
+	map(f,(dealId(data) for data in o))
+	return p
 def addId(name):
 	def l(o):
 		o['Id'] = name
@@ -43,3 +48,35 @@ def getext(name,column,Zfilter = {}):
 	return a(1),a(-1)
 def count(name):
 	return db[name].count()
+def reducer(o):
+	pass
+#以下是这个部分最恶心的函数，返回值是一个生成生成某列值相等的记录的生成器的生成器←_←
+def popby(name,column,Zfilter = {}):
+	cursor = db[name].find(Zfilter).sort(column,pymongo.DESCENDING)
+	i = cursor.__iter__()
+	b = {}
+	b[2] = False
+	while True:
+		if not b[2]:
+			try:
+				b[1] = i.next()
+				b[0]= b[1][column]
+				b[2] = True
+			except:
+				return
+		def a():
+			yield b[1]
+			while True:
+				try:
+					b[1] = i.next()
+				except:
+					b[2] = False
+					return
+				if b[0] == b[1][column]:
+					yield b[1]
+				else:
+					b[0] = b[1][column]
+					return
+		yield a()
+	
+		

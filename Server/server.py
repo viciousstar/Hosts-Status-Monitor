@@ -85,7 +85,7 @@ class GetPostHandler(BaseHTTPRequestHandler):
         return
 
 def mainpage(obj):
-     '''(for showing on explore) all host's data for now '''
+    '''(for showing on explore) all host's data for now '''
     fileHandle = open ( './view/index.html' )
     for content in fileHandle:
         obj.wfile.write(content)
