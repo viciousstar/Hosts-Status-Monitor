@@ -9,16 +9,36 @@
 		<script src="../tool/ajax3.0.js"></script>
 		<script src="../tool/paper/paper-core.min.js"></script>
 		<script src="../tool/paper/paper-full.min.js"></script>
-				<!--<script>
-				function ajaxgetinfo(){
 
-					setTimeout("ajaxgetinfo()", 3000 );
+		<script type="text/paperscript" canvas="cpu" >	
+				function draw(){
+					var text = new PointText(new Point(30, 30));
+					text.fillColor = 'white';
+					text.content = 'Hello world';
 				}
-				window.onload=setTimeout("ajaxgetinfo()", 2000 );
-				</script>-->
+				draw();
+			</script>
+		<script type="text/paperscript" canvas="ior" >		</script>
+		<script type="text/paperscript" canvas="iow" >		</script>
+		<script type="text/paperscript" canvas="mem" >		</script>
+		<script type="text/javascript">
+				function ajaxget(){
+					Ajax().get("graphic",function(data){
+
+							data;
+
+					});
+					setTimeout("ajaxget()", 3000 );
+				}
+				window.onload=setTimeout("ajaxget()", 10 );
+
+		</script>
 	</head>
 	<body>
 		<button onclick="ajaxgetinfo()">Refresh</button>
 		<a href="/" class="btn btn-primary btn-lg">back to main page!</a>
 		<div style='margin:40px'>
-		
+			<canvas id="cpu" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>cpu
+			<canvas id="ior" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>ior
+			<canvas id="iow" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>iow
+			<canvas id="mem" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>mem

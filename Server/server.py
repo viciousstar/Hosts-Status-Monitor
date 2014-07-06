@@ -26,7 +26,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
 def receiver():  
     '''receive data as a function in a thread'''
-    HOST, PORT = "localhost", 10000
+    HOST, PORT = "192.168.1.112", 10001
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
     server.serve_forever()

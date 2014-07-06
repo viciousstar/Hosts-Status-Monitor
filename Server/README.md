@@ -16,3 +16,4 @@ data = {
 - allinfo() return  {'设备名称1':{CPU:20(百分数),IO:数据,MainMemory:数据},'设备名称2':{CPU:20(百分数),IO:数据,MainMemory:数据},'设备名称3':{CPU:20(百分数),IO:数据,MainMemory:数据}}
 - getallname() return ['设备名称1','设备名称2','设备名称3']
 
+-gethourdata('设备名称') return '{cpu:{"数据名称":["横坐标百分比","纵坐标百分比"],"数据名称2":[,]},ior:{'':[],'':[]},iow,mem}'
