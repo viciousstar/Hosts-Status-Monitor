@@ -59,4 +59,5 @@ class Monitor():
 
 
 if  __name__ == "__main__":
+	# luanch progammer connect and recieve to 'localhost: port' 
 	monitor  = Monitor("localhost", 9999)
