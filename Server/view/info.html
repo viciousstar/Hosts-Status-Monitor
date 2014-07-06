@@ -12,33 +12,161 @@
 
 		<script type="text/paperscript" canvas="cpu" >	
 				function draw(){
-					var text = new PointText(new Point(30, 30));
-					text.fillColor = 'white';
-					text.content = 'Hello world';
-				}
-				draw();
-			</script>
-		<script type="text/paperscript" canvas="ior" >		</script>
-		<script type="text/paperscript" canvas="iow" >		</script>
-		<script type="text/paperscript" canvas="mem" >		</script>
-		<script type="text/javascript">
-				function ajaxget(){
-					Ajax().get("graphic",function(data){
 
-							data;
-
+					infomation=eval('('+info+')');
+					if(!infomation){return;}
+					flag=false;
+					var path = new Path({
+						strokeColor: 'green'
 					});
-					setTimeout("ajaxget()", 3000 );
+					for (point in infomation.cpu){
+						pp=new Point(4.5*infomation.cpu[point][0], 300-3*infomation.cpu[point][1]);
+						var text = new PointText(pp);
+						text.fillColor = 'white';
+						text.content = infomation.cpu[point][1];					
+						text = new PointText(new Point(4.5*infomation.cpu[point][0], 300));
+						text.fillColor = 'white';
+						text.content = point;
+						path.add(pp);
+					}
+				}
+				var flag=true;
+				function onFrame(event) {
+					if(flag){
+						draw();
+					}
+				}
+			</script>
+		<script type="text/paperscript" canvas="ior" >
+					function draw(){
+
+					infomation=eval('('+info+')');
+					if(!infomation){return;}
+					flag=false;
+					var path = new Path({
+						strokeColor: 'green'
+					});
+					for (point in infomation.ior){
+						pp=new Point(4.5*infomation.ior[point][0], 300-3*infomation.ior[point][1]);
+						var text = new PointText(pp);
+						text.fillColor = 'white';
+						text.content = infomation.ior[point][1];					
+						text = new PointText(new Point(4.5*infomation.ior[point][0], 300));
+						text.fillColor = 'white';
+						text.content = point;
+						path.add(pp);
+					}
+				}
+				var flag=true;
+				function onFrame(event) {
+					if(flag){
+						draw();
+					}
+				}		
+		</script>
+		<script type="text/paperscript" canvas="iow" >
+				function draw(){
+
+					infomation=eval('('+info+')');
+					if(!infomation){return;}
+					flag=false;
+					var path = new Path({
+						strokeColor: 'green'
+					});
+					for (point in infomation.iow){
+						pp=new Point(4.5*infomation.iow[point][0], 300-3*infomation.iow[point][1]);
+						var text = new PointText(pp);
+						text.fillColor = 'white';
+						text.content = infomation.iow[point][1];					
+						text = new PointText(new Point(4.5*infomation.iow[point][0], 300));
+						text.fillColor = 'white';
+						text.content = point;
+						path.add(pp);
+					}
+				}
+				var flag=true;
+				function onFrame(event) {
+					if(flag){
+						draw();
+					}
+				}
+				</script>
+		<script type="text/paperscript" canvas="mem" >	
+				function draw(){
+
+					infomation=eval('('+info+')');
+					if(!infomation){return;}
+					flag=false;
+					var path = new Path({
+						strokeColor: 'green'
+					});
+					for (point in infomation.mem){
+						pp=new Point(4.5*infomation.mem[point][0], 300-3*infomation.mem[point][1]);
+						var text = new PointText(pp);
+						text.fillColor = 'white';
+						text.content = infomation.mem[point][1];					
+						text = new PointText(new Point(4.5*infomation.mem[point][0], 300));
+						text.fillColor = 'white';
+						text.content = point;
+						path.add(pp);
+					}
+				}
+				var flag=true;
+				function onFrame(event) {
+					if(flag){
+						draw();
+					}
+				}
+			</script>
+		<script type="text/javascript">
+				var info;
+				function ajaxget(){
+					Ajax().get("graphic/"+window.location.href.split('/')[4],function(data){
+						info=data	;
+					});
 				}
 				window.onload=setTimeout("ajaxget()", 10 );
 
 		</script>
 	</head>
 	<body>
-		<button onclick="ajaxgetinfo()">Refresh</button>
-		<a href="/" class="btn btn-primary btn-lg">back to main page!</a>
+		<nav class="navbar navbar-default" role="navigation">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">MAINPAGE</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li><a href="">DAY</a></li>
+		        <li><a href="#">HOUR</a></li>
+		       </ul>
+		   	</div>
+		  </div><!-- /.container-fluid -->
+		</nav>
+
 		<div style='margin:40px'>
-			<canvas id="cpu" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>cpu
-			<canvas id="ior" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>ior
-			<canvas id="iow" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>iow
-			<canvas id="mem" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas>mem
+			<div class="row">
+			  <div class="col-md-6">
+			  	<center><canvas id="cpu" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas><br>
+			  	<h3>cpu</h3></center>
+			  </div>
+			  <div class="col-md-6">
+			  	<center><canvas id="ior" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas><br>
+			  	<h3>ior</h3></center>
+			  </div>
+			</div>
+			<div class="row">
+			  <div class="col-md-6">
+			  	<center><canvas id="iow" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas><br>
+			  	<h3>iow</h3></center>
+			  </div>
+			  <div class="col-md-6">
+			  	<center><canvas id="mem" style="height:300px;width:450px;background-color:#3c3c3c;border:2px solid #898989;"></canvas><br>
+			  	<h3>mem</h3></center>
+			  </div>
+			</div>
+			
+			
+			
+			

@@ -26,7 +26,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
 def receiver():  
     '''receive data as a function in a thread'''
-    HOST, PORT = "192.168.1.112", 10001
+    HOST, PORT = "localhost", 10001
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
     server.serve_forever()
@@ -84,10 +84,15 @@ class GetPostHandler(BaseHTTPRequestHandler):
         #...file
         if self.path=='/':
             mainpage(self)
+        elif 'graphic' in self.path:
+            name=self.path.split('/')[3]
+            print name
+            graphic(self,name)
         elif 'info' in self.path:
             info(self)   
         elif 'ajaxget' in self.path:
             ajaxget(self)  
+
         else:
             fileHandle = open ( self.path.lstrip('/') )
             for content in fileHandle:
@@ -144,6 +149,10 @@ def ajaxget(obj):
     obj.wfile.write(info)
     return
 
+def graphic(obj,name):
+    #getdaydata(name)
+    obj.wfile.write('{cpu:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,80],"1.5":[50,70],"1.6":[60,40],"1.7":[70,20]},mem:{"1.1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    return
 
 def getname():
     return ['name1','n3','n4']
