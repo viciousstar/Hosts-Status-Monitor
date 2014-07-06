@@ -43,3 +43,32 @@ def getext(name,column,Zfilter = {}):
 	return a(1),a(-1)
 def count(name):
 	return db[name].count()
+def popby(name,column,Zfilter = {}):
+	cursor = db[name].find(Zfilter).sort(column,pymongo.DESCENDING)
+	i = cursor.__iter__()
+	b = {}
+	b[2] = False
+	while True:
+		if not b[2]:
+			try:
+				b[1] = i.next()
+				b[0]= b[1][column]
+				b[2] = True
+			except:
+				return
+		def a():
+			yield b[1]
+			while True:
+				try:
+					b[1] = i.next()
+				except:
+					b[2] = False
+					return
+				if b[0] == b[1][column]:
+					yield b[1]
+				else:
+					b[0] = b[1][column]
+					return
+		yield a()
+	
+		

@@ -17,8 +17,13 @@ def save(data):
 	
 #small funcs
 def addTimeStamp(x):
-	x['time'] = time.time()
+	x['time'],x['daytime'],x['hourtime'] = time.time(),gettoday(),getnowhour()
 	return True
+def addArchiveLabel(x):
+	x['archivelabel'] = 'none'
+	return True
+getnowhour = lambda : int(time.time()) / 3600
+gettoday = lambda : getnowhour() / 24
 def listify(x):
 	if type(x) == type({}):
 		return [x]

@@ -59,4 +59,4 @@ class Monitor():
 
 
 if  __name__ == "__main__":
-	monitor  = Monitor("localhost", 9999)
+	monitor  = Monitor("127.0.0.1", 10000)
