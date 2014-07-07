@@ -60,12 +60,6 @@ class GetPostHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         '''Answer for GET request'''
-        #if someone watching
-        for ip in allhostips:
-            s = socket.socket()
-            s.connect((ip, 20000))
-            s.sendall('watching')
-            s.close()
 
         parsed_path = urlparse.urlparse(self.path)
         self.send_response(200)  #返回给客户端结果，这里的响应码是200 OK，并包含一些其他信
@@ -94,6 +88,13 @@ class GetPostHandler(BaseHTTPRequestHandler):
             for content in fileHandle:
                 self.wfile.write(content)
             fileHandle.close()
+              
+        #if someone watching
+        for ip in allhostips:
+            s = socket.socket()
+            s.connect((ip, 20000))
+            s.sendall('watching')
+            s.close()
         return
 
 def mainpage(obj):
@@ -158,8 +159,8 @@ def graphic(obj,name):
 
     '''return one host data for 10 days'''
     #testing data
-    obj.wfile.write('{cpu:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,80],"1.5":[50,70],"1.6":[60,40],"1.7":[70,20]},mem:{"1.1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
-    #getdaydata(name)
+    #obj.wfile.write('{cpu:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,80],"1.5":[50,70],"1.6":[60,40],"1.7":[70,20]},mem:{"1.1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    obj.wfile.write(getdaydata(name))
     return
 
 def getname():
@@ -169,7 +170,8 @@ def getname():
 
 def graphichour(obj,name):
     '''return one host data for 10 hours'''
-    obj.wfile.write('{cpu:{"1":[10,50],".2":[20,30],".3":[30,40],".4":[40,80],".5":[50,70],".6":[60,40],".7":[70,20]},mem:{".1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    #obj.wfile.write('{cpu:{"1":[10,50],".2":[20,30],".3":[30,40],".4":[40,80],".5":[50,70],".6":[60,40],".7":[70,20]},mem:{".1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    obj.wfile.write(load.gethourdata(name))
     return
 
 if __name__ == '__main__':
