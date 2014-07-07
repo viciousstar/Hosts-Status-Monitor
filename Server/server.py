@@ -12,24 +12,17 @@ from subprocess import PIPE
 import  json 
 import thread
 import SocketServer
-<<<<<<< HEAD
 import save
 import load
-=======
-import save 
->>>>>>> 7d813b226a0f1625861571bc72e954fea0ade76f
+
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     '''for receive data'''
     def handle(self):           
         self.data = self.request.recv(1024).strip()
         print "{} wrote:".format(self.client_address[0])
         print self.data
-<<<<<<< HEAD
         da=json.loads(self.data)
         save.save(da)
-=======
-        save.save(self.data)
->>>>>>> 7d813b226a0f1625861571bc72e954fea0ade76f
         self.request.sendall('watching')
 
 
