@@ -32,7 +32,7 @@ def archiveall(x):
 				p[l] = p[l] / p[l,0]
 				p.pop((l,0))
 			p[x] = j[x]
-			p['time'] = l['time']
+			p['time'] = j['time']
 			if x == 'hourtime': p['daytime'] = j['daytime']
 			ppp = load.readarchiveddata(k,'time')
 			if now[x] == p[x] or p['time'] in ppp:
