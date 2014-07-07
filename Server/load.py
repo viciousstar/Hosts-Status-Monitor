@@ -25,7 +25,16 @@ def gethourdata(name):
 		for j in config.INFOS:
 			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
 	return p
-		
+def getdaydata(name):
+	cursor = readarchiveddata(name,'day').limit(10)
+	p = {}
+	for index,i in enumerate(cursor):
+		a = time.localtime(i['daytime'] * 3600 * 24)
+		n = str(a.tm_mon,a.tm_mday)[1:-1]
+		p[n] = {}
+		for j in config.INFOS:
+			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
+	return p
 #small funcs
 def forall(Zfunction,data):
 	return [Zfunction(args) for args in (addId(i)(data) for i in db.collection_names() if i not in ['system.indexes'])]
