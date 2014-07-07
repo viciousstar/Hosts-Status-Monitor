@@ -13,26 +13,27 @@ import socket
 from datetime import datetime
 import threading
 import SocketServer
+import config
 
 oldtime = datetime.now()
-inte = 5
+inte = config.speed_low
 class MyTCPHandler(SocketServer.BaseRequestHandler):
 	def handle(self):
 		global inte
 		global oldtime
 		self.data = self.request.recv(1024)
 		if self.data ==  "watching":
-			inte = 1
+			inte = config.speed_high
 			oldtime = datetime.now()
 		else:
-			inte = 5
+			inte = config.speed_low
 
 def  send_sta(host, port):
 	# send stastics including cpu, mermery, io, and hostname by dict	
 	global inte 	
+	s1 = socket.socket()
+	s1.connect((host, port))
 	while(True):
-		s1 = socket.socket()
-		s1.connect((host, port))
 		cpu_percent = psutil.cpu_percent(interval = inte)	#interval = time.sleep(interval)
 		mer_percent = psutil.virtual_memory().percent
 		io_radio = psutil.disk_io_counters()
@@ -45,7 +46,7 @@ def  send_sta(host, port):
 		newtime = datetime.now()
 		deltatime = (newtime - oldtime).total_seconds()
 		if deltatime > 30:
-			inte = 5
+			inte = config.speed_low
 
 		print "Send: " + monitor_json
 		print "The speed is " + str(inte)
@@ -55,7 +56,7 @@ def  rec_sta(host, port):
 	#listen to change speed of catching  stastics speed
 	global inte 	
 	host = "0.0.0.0"		#automatic get ip
-	port =  20000			
+	port =  config.local_port			
 	server = SocketServer.TCPServer((host, port), MyTCPHandler)
 	print "A SocketServer is listen on " + host + ' : ' +str(port)
 	server.serve_forever()
@@ -64,6 +65,7 @@ def  Monitor(host, port):
 	host = host
 	port = port
 	print "Connect to " + str(host) + ": " + str(port)		
+	#multi thread
 	t2 = threading.Thread(target = send_sta, args = (host, port))
 	t2.start()
 	t1 = threading.Thread(target = rec_sta, args = (host, port))
@@ -71,5 +73,5 @@ def  Monitor(host, port):
 
 if  __name__ == "__main__":
 	remote_ip = raw_input("Please input remote server ip, for  example: 127.0.0.1\n")
-	Monitor(remote_ip, 10001)
+	Monitor(remote_ip, config.server_port)
 
