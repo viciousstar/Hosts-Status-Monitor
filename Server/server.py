@@ -13,14 +13,14 @@ import  json
 
 import thread 
 import SocketServer
-# import save 
+import save 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     '''for receive data'''
     def handle(self):           
         self.data = self.request.recv(1024).strip()
         print "{} wrote:".format(self.client_address[0])
         print self.data
-        # save.save(self.data)
+        save.save(self.data)
         self.request.sendall('watching')
 
 
