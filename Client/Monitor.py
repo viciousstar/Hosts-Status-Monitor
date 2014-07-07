@@ -10,19 +10,20 @@ import psutil
 from subprocess import PIPE
 import  json
 import socket
-import time
+from datetime import datetime
 import threading
 import SocketServer
 
-
-inte = 3
+oldtime = datetime.now()
+inte = 5
 class MyTCPHandler(SocketServer.BaseRequestHandler):
 	def handle(self):
 		global inte
+		global oldtime
 		self.data = self.request.recv(1024)
-		print self.data
 		if self.data ==  "watching":
 			inte = 1
+			oldtime = datetime.now()
 		else:
 			inte = 5
 
@@ -30,7 +31,6 @@ def  send_sta(host, port):
 	# send stastics including cpu, mermery, io, and hostname by dict	
 	global inte 	
 	while(True):
-		time.sleep(5)
 		s1 = socket.socket()
 		s1.connect((host, port))
 		cpu_percent = psutil.cpu_percent(interval = inte)	#interval = time.sleep(interval)
@@ -41,6 +41,12 @@ def  send_sta(host, port):
 		monitor = {"Id": hostname, "cpu": cpu_percent, "mem": mer_percent, "ior": io_radio_read, "iow": io_radio_write}
 		monitor_json = json.dumps(monitor)
 		s1.sendall(monitor_json)
+		#if timeout, turn down the speed
+		newtime = datetime.now()
+		deltatime = (newtime - oldtime).total_seconds()
+		if deltatime > 20:
+			inte = 5
+
 		print "Send: " + monitor_json
 		print "The speed is " + str(inte)
 
@@ -48,7 +54,7 @@ def  send_sta(host, port):
 def  rec_sta(host, port):
 	#listen to change speed of catching  stastics speed
 	global inte 	
-	host = "0.0.0.0"
+	host = "0.0.0.0"		#automatic get ip
 	port =  20000			
 	server = SocketServer.TCPServer((host, port), MyTCPHandler)
 	print "A SocketServer is listen on " + host + ' : ' +str(port)
@@ -62,9 +68,6 @@ def  Monitor(host, port):
 	t2.start()
 	t1 = threading.Thread(target = rec_sta, args = (host, port))
 	t1.start()
-
-def get_ip():
-	inet = psutil.Popen("ifconfig wlan0 | g")
 
 if  __name__ == "__main__":
 	Monitor("192.168.1.112", 10001)
