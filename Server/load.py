@@ -9,7 +9,7 @@ import time
 db = pymongo.Connection('localhost',27017)['hoststatus']
 
 def allinfo():
-	return mapfordict(reducer,formalize(forall(readonewithname,{'archivelabel':'none'})))
+	return mapfordict(reducer,formalize(forall(readonewithname,{})))
 def getallname():
 	return filter(lambda x: x not in ['system.indexes'],db.collection_names())
 def getcount(name):

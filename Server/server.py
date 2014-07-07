@@ -27,7 +27,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
 def receiver():  
     '''receive data as a function in a thread'''
-    HOST, PORT = "localhost", 10001
+    HOST, PORT = "192.168.1.112", 10001
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
     server.serve_forever()
@@ -138,7 +138,7 @@ def ajaxget(obj):
     io_radio_read, io_radio_write = io_radio.read_bytes, io_radio.write_bytes
     info=json.dumps(load.allinfo())
     print info
-    info='{"localhost":{CPU:'+str(cpu_percent)+',iow:'+str(io_radio_write)+',ior:'+str(io_radio_read)+',rem:'+str(mer_percent)+'},'+info.lstrip('{')
+    info='{"localhost":{cpu:'+str(cpu_percent)+',iow:'+str(io_radio_write)+',ior:'+str(io_radio_read)+',mem:'+str(mer_percent)+'},'+info.lstrip('{')
     obj.wfile.write(info)
     return
 
@@ -161,6 +161,7 @@ def graphichour(obj,name):
     return
 
 if __name__ == '__main__':
+    '''function main() , '''
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 
     thread.start_new_thread(receiver, ())  

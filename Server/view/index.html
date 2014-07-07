@@ -13,8 +13,8 @@
 						data=eval('('+data+')');
 						for(var i in data){
 							cpu=document.getElementById(i+"cpu");
-							cpu.innerHTML=data[i].CPU+'%';
-							cpu.style='width: '+data[i].CPU+'%;';
+							cpu.innerHTML=data[i].cpu+'%';
+							cpu.style='width: '+data[i].cpu+'%;';
 
 							ior=document.getElementById(i+"iow");
 							ior.innerHTML=data[i].iow+'byte';
@@ -25,8 +25,8 @@
 							iow.style='width: '+data[i].ior/50000000+'%;';
 
 							mem=document.getElementById(i+"mem");
-							mem.innerHTML=data[i].rem+'%';
-							mem.style='width: '+data[i].rem+'%;';
+							mem.innerHTML=data[i].mem+'%';
+							mem.style='width: '+data[i].mem+'%;';
 						}
 
 					});

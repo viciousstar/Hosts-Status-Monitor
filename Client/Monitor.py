@@ -15,7 +15,7 @@ import threading
 class Monitor():
 	inte = 5
 	port = 10001
-	host = "localhost"
+	host = "192.168.1.112"
 
 	def  send_sta(self):
 	# send stastics including cpu, mermery, io, and hostname by dict
@@ -57,8 +57,5 @@ class Monitor():
 
 
 if  __name__ == "__main__":
-<<<<<<< HEAD
 	monitor  = Monitor("localhost", 10001)
-=======
-	monitor  = Monitor("127.0.0.1", 10000)
->>>>>>> 5473f4188285b3c36ef6fd9a07e2217798477368
+
