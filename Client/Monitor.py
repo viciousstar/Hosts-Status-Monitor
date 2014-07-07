@@ -44,7 +44,7 @@ def  send_sta(host, port):
 		#if timeout, turn down the speed
 		newtime = datetime.now()
 		deltatime = (newtime - oldtime).total_seconds()
-		if deltatime > 20:
+		if deltatime > 30:
 			inte = 5
 
 		print "Send: " + monitor_json
@@ -70,5 +70,6 @@ def  Monitor(host, port):
 	t1.start()
 
 if  __name__ == "__main__":
-	Monitor("192.168.1.112", 10001)
+	remote_ip = raw_input("Please input remote server ip, for  example: 127.0.0.1\n")
+	Monitor(remote_ip, 10001)
 
