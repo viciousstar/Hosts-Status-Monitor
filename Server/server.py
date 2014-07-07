@@ -9,26 +9,30 @@ import config
 import urlparse
 import psutil
 from subprocess import PIPE
-import  json 
+import json 
 import thread
 import SocketServer
 import save
 import load
+import socket
+allhostips=[]
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     '''for receive data'''
-    def handle(self):           
+    def handle(self):
         self.data = self.request.recv(1024).strip()
         print "{} wrote:".format(self.client_address[0])
         print self.data
         da=json.loads(self.data)
         save.save(da)
-        self.request.sendall('watching')
+        if not self.client_address[0] in allhostips:
+            allhostips.append(self.client_address[0])
+            print 'a new ip \'' +self.client_address[0]+'\' is add to the list!'
 
 
 def receiver():  
     '''receive data as a function in a thread'''
-    HOST, PORT = "192.168.1.112", 10001
+    HOST, PORT = config.RECEIVERHOST, config.RECEIVERPORT
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
     server.serve_forever()
@@ -56,6 +60,13 @@ class GetPostHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         '''Answer for GET request'''
+        #if someone watching
+        for ip in allhostips:
+            s = socket.socket()
+            s.connect((ip, 20000))
+            s.sendall('watching')
+            s.close()
+
         parsed_path = urlparse.urlparse(self.path)
         self.send_response(200)  #返回给客户端结果，这里的响应码是200 OK，并包含一些其他信
         self.end_headers() #结束头信息
@@ -164,7 +175,7 @@ def graphichour(obj,name):
 if __name__ == '__main__':
     '''function main() , '''
     from BaseHTTPServer import HTTPServer
-    server = HTTPServer(('localhost', config.PORT), GetPostHandler) 
-    thread.start_new_thread(receiver, ())  
+    server = HTTPServer((config.HOST, config.PORT), GetPostHandler) 
+    thread.start_new_thread(receiver, ()) 
     print 'Starting server at %d, use <Ctrl-C> to stop' %config.PORT
     server.serve_forever()  #保存程序一直运行
