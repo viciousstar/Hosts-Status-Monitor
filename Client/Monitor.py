@@ -31,9 +31,9 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 def  send_sta(host, port):
 	# send stastics including cpu, mermery, io, and hostname by dict	
 	global inte 	
-	s1 = socket.socket()
-	s1.connect((host, port))
 	while(True):
+		s1 = socket.socket()
+		s1.connect((host, port))
 		cpu_percent = psutil.cpu_percent(interval = inte)	#interval = time.sleep(interval)
 		mer_percent = psutil.virtual_memory().percent
 		io_radio = psutil.disk_io_counters()
