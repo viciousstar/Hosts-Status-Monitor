@@ -38,7 +38,7 @@ def  send_sta(host, port):
 		io_radio = psutil.disk_io_counters()
 		io_radio_read, io_radio_write = io_radio.read_bytes, io_radio.write_bytes
 		hostname = psutil.Popen("hostname", stdout = PIPE).communicate()[0].rstrip()  #remove the end '\n'
-		monitor = {"hostname": hostname, "cpu_percent": cpu_percent, "mer_percent": mer_percent, "io_radio_read": io_radio_read, "io_radio_write": io_radio_write}
+		monitor = {"Id": hostname, "cpu": cpu_percent, "mem": mer_percent, "ior": io_radio_read, "iow": io_radio_write}
 		monitor_json = json.dumps(monitor)
 		s1.sendall(monitor_json)
 		print "Send: " + monitor_json
@@ -48,7 +48,7 @@ def  send_sta(host, port):
 def  rec_sta(host, port):
 	#listen to change speed of catching  stastics speed
 	global inte 	
-	host = "192.168.1.109"
+	host = "0.0.0.0"
 	port =  20000			
 	server = SocketServer.TCPServer((host, port), MyTCPHandler)
 	print "A SocketServer is listen on " + host + ' : ' +str(port)
@@ -63,7 +63,9 @@ def  Monitor(host, port):
 	t1 = threading.Thread(target = rec_sta, args = (host, port))
 	t1.start()
 
-if  __name__ == "__main__":
+def get_ip():
+	inet = psutil.Popen("ifconfig wlan0 | g")
 
-	Monitor("192.168.1.109", 20000)
+if  __name__ == "__main__":
+	Monitor("192.168.1.112", 10001)
 

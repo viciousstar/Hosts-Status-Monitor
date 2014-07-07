@@ -5,6 +5,8 @@
 '''
 import pymongo
 import time
+import config
+import DP
 
 db = pymongo.Connection('localhost',27017)['hoststatus']
 
@@ -14,6 +16,25 @@ def getallname():
 	return filter(lambda x: x not in ['system.indexes'],db.collection_names())
 def getcount(name):
 	return db[name].count
+def gethourdata(name):
+	cursor = readarchiveddata(name,'hour').limit(10)
+	p = {}
+	for index,i in enumerate(cursor):
+		n = str(time.localtime(i['hourtime'] * 3600).tm_hour)
+		p[n] = {}
+		for j in config.INFOS:
+			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
+	return p
+def getdaydata(name):
+	cursor = readarchiveddata(name,'day').limit(10)
+	p = {}
+	for index,i in enumerate(cursor):
+		a = time.localtime(i['daytime'] * 3600 * 24)
+		n = str(a.tm_mon,a.tm_mday)[1:-1]
+		p[n] = {}
+		for j in config.INFOS:
+			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
+	return p
 #small funcs
 def forall(Zfunction,data):
 	return [Zfunction(args) for args in (addId(i)(data) for i in db.collection_names() if i not in ['system.indexes'])]
@@ -22,6 +43,8 @@ def formalize(o): #把列表形式的东西搞成字典型，便于前台展示
 	def addtop(x) : p[x[0]] = x[1]
 	map(addtop,((p,i[p]) for i in o for p in i))
 	return p
+def todatetime():
+	pass
 def addId(name):
 	def l(o):
 		o['Id'] = name
@@ -39,7 +62,9 @@ def readintime(Zfilter,limits):
 	return db[a].find(b).sort('time',pymongo.DESCENDING).limit(limits)
 def readonewithname(Zfilter):
 	a,b = dealId(Zfilter)
-	return {a:db[a].find(b).sort('time',pymongo.DESCENDING).next()}
+	try : p = {a:db[a].find(b).sort('time',pymongo.DESCENDING).next()}
+	except : p = {}
+	return p
 def readlastone(Zfilter):
 	a = readonewithname(Zfilter)
 	return a.values()[0]
@@ -56,6 +81,8 @@ def mapfordict(f,d):
 	for i in d:
 		f(d[i])
 	return d
+def readarchiveddata(name,x):
+	return db[name].find({'archivelabel':x}).sort(x + 'time',pymongo.DESCENDING)
 #以下是这个部分最恶心的函数，返回值是一个生成生成某列值相等的记录的生成器的生成器←_←
 def popby(name,column,Zfilter = {}):
 	cursor = db[name].find(Zfilter).sort(column,pymongo.DESCENDING)
@@ -84,4 +111,4 @@ def popby(name,column,Zfilter = {}):
 					b[0] = b[1][column]
 					return
 		yield a()
-		
+
