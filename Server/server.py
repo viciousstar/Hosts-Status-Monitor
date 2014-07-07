@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 '''
-Author:Liu
+Author : Liu Yang
+Date : July 6
 '''
 from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi 
@@ -9,24 +10,25 @@ import urlparse
 import psutil
 from subprocess import PIPE
 import  json 
-
-
-import thread 
+import thread
 import SocketServer
-import save 
+import save
+import load
+
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     '''for receive data'''
     def handle(self):           
         self.data = self.request.recv(1024).strip()
         print "{} wrote:".format(self.client_address[0])
         print self.data
-        save.save(self.data)
+        da=json.loads(self.data)
+        save.save(da)
         self.request.sendall('watching')
 
 
 def receiver():  
     '''receive data as a function in a thread'''
-    HOST, PORT = "localhost", 10000
+    HOST, PORT = "192.168.1.112", 10001
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     print "A SocketServer is listen on " + HOST + ' : ' +str(PORT)
     server.serve_forever()
@@ -36,6 +38,7 @@ def receiver():
 
 class GetPostHandler(BaseHTTPRequestHandler):
     def do_POST(self):
+        '''POST default methord'''
         form = cgi.FieldStorage(
         fp=self.rfile,
         headers=self.headers,
@@ -46,48 +49,35 @@ class GetPostHandler(BaseHTTPRequestHandler):
         self.end_headers() 
         self.wfile.write('Client: %s\n' % str(self.client_address)) 
         self.wfile.write('User-agent: %s\n' % str(self.headers['user-agent'])) 
-        self.wfile.write('Path: %s\n' % self.path) 
+        self.wfile.write('Path: %s\n' % self.path)
         self.wfile.write('Form data:\n')
-
-        for field in form.keys():
-            field_item = form[field] 
-            self.wfile.write('\t%s=%s\n' % (field, form[field].value)) 
+        self.wfile.write('You are willing to give a POST request to Hosts-Status-Monitor but it is not allowed ') 
         return
 
     def do_GET(self):
+        '''Answer for GET request'''
         parsed_path = urlparse.urlparse(self.path)
-        # message_parts = [  
-        #         'CLIENT VALUES:',    
-        #         'client_address=%s (%s)' % (self.client_address,
-        #                                     self.address_string()),  #返回客户端的地址和端口
-        #         'command=%s' % self.command,  #返回操作的命令，这里比然是'get'
-        #         'path=%s' % self.path,  #返回请求的路径
-        #         'real path=%s' % parsed_path.path, #返回通过urlparse格式化的路径
-        #         'query=%s' % parsed_path.query, #返回urlparse格式化的查询语句的键值
-        #         'request_version=%s' % self.request_version, #返回请求的http协议版本号
-        #         '',
-        #         'SERVER VALUES:', #服务器段信息
-        #         'server_version=%s' % self.server_version, #返回服务器端http的信息
-        #         'sys_version=%s' % self.sys_version, #返回服务器端使用的python版本
-        #         'protocol_version=%s' % self.protocol_version,  #返回服务器端使用的http协议版本
-        #         '',
-        #         'HEADERS RECEIVED:',
-        #         ]
-        #for name, value in sorted(self.headers.items()):  #返回項添加头信息，包含用户的user-agent信息，主机信息等
-        #    message_parts.append('%s=%s' % (name, value.rstrip()))
-        #message_parts.append('')
-        #message = '\r\n'.join(message_parts)
-        
         self.send_response(200)  #返回给客户端结果，这里的响应码是200 OK，并包含一些其他信
         self.end_headers() #结束头信息
 
-        #...file
+        #A router for some webpage 
         if self.path=='/':
+            #(for showing on explore)show main page
             mainpage(self)
+        elif 'graphic' in self.path:
+            #(for ajax get)show one host's history info in two ways : 'day' and 'hour'
+            name=self.path.split('/')[3]
+            print name
+            if 'hour' in self.path:
+                graphichour(self,name)
+            else:
+                graphic(self,name)
         elif 'info' in self.path:
-            info(self)   
+            #(for showing on explore) show one host's history infomation
+            info(self)
         elif 'ajaxget' in self.path:
             ajaxget(self)  
+        #FILE system for GET request 'css' 'js' file or something
         else:
             fileHandle = open ( self.path.lstrip('/') )
             for content in fileHandle:
@@ -96,6 +86,7 @@ class GetPostHandler(BaseHTTPRequestHandler):
         return
 
 def mainpage(obj):
+    '''(for showing on explore) all host's data for now '''
     fileHandle = open ( './view/index.html' )
     for content in fileHandle:
         obj.wfile.write(content)
@@ -107,7 +98,7 @@ def mainpage(obj):
     for name in getname():
         fileHandle = open ( './view/simple.html' )
         for content in fileHandle:
- 
+            #auto load pages
             content=content.replace('CPUID',name+'cpu')
             content=content.replace('IORID',name+'ior')
             content=content.replace('IOWID',name+'iow')
@@ -123,8 +114,14 @@ def mainpage(obj):
     return
 
 def info(obj):
+    '''(for showing on explore) one host's complex data in history '''
     fileHandle = open ( './view/info.html' )
+    name=obj.path.split('/')[2]
     for content in fileHandle:
+        name=obj.path.split('/')[2]
+        content=content.replace('../tool','../../tool')
+        content=content.replace('NAME',name)
+        content=content.replace('graphic','graphichour')
         obj.wfile.write(content)
     fileHandle.close()
 
@@ -135,21 +132,37 @@ def info(obj):
     return
 
 def ajaxget(obj):
+    ''' return all HOST status for now'''
     cpu_percent = psutil.cpu_percent(interval = 1)
     mer_percent = psutil.virtual_memory().percent
     io_radio = psutil.disk_io_counters()
     io_radio_read, io_radio_write = io_radio.read_bytes, io_radio.write_bytes
-    info='{"name1":{CPU:20,iow:3000000000,ior:2000000000,rem:40}}'
-    info='{"localhost":{CPU:'+str(cpu_percent)+',iow:'+str(io_radio_write)+',ior:'+str(io_radio_read)+',rem:'+str(mer_percent)+'},'+info.lstrip('{')
+    info=json.dumps(load.allinfo())
+    print info
+    info='{"localhost":{cpu:'+str(cpu_percent)+',iow:'+str(io_radio_write)+',ior:'+str(io_radio_read)+',mem:'+str(mer_percent)+'},'+info.lstrip('{')
     obj.wfile.write(info)
     return
 
+def graphic(obj,name):
+
+    '''return one host data for 10 days'''
+    #testing data
+    obj.wfile.write('{cpu:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,80],"1.5":[50,70],"1.6":[60,40],"1.7":[70,20]},mem:{"1.1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    #getdaydata(name)
+    return
 
 def getname():
-    return ['name1','n3','n4']
+    ''' return all host names'''
+    return load.getallname()
 
+
+def graphichour(obj,name):
+    '''return one host data for 10 hours'''
+    obj.wfile.write('{cpu:{"1":[10,50],".2":[20,30],".3":[30,40],".4":[40,80],".5":[50,70],".6":[60,40],".7":[70,20]},mem:{".1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
+    return
 
 if __name__ == '__main__':
+    '''function main() , '''
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('localhost', config.PORT), GetPostHandler) 
     thread.start_new_thread(receiver, ())  

@@ -17,7 +17,7 @@ def percentify(name,column,value):
 	unit = float(b-a) / 90
 	x = 5 + (value-a) / unit
 	return bound(0,100)(x)
-	
+
 #small funcs
 def getbound(name,column):
 	return getmin(name,column),getmax(name,column)

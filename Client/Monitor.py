@@ -14,6 +14,7 @@ import time
 import threading
 import SocketServer
 
+
 inte = 3
 class MyTCPHandler(SocketServer.BaseRequestHandler):
 	def handle(self):
@@ -43,6 +44,7 @@ def  send_sta(host, port):
 		print "Send: " + monitor_json
 		print "The speed is " + str(inte)
 
+
 def  rec_sta(host, port):
 	#listen to change speed of catching  stastics speed
 	global inte 	
@@ -66,6 +68,4 @@ def get_ip():
 
 if  __name__ == "__main__":
 	Monitor("192.168.1.112", 10001)
-
-
 
