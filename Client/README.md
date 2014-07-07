@@ -1,7 +1,7 @@
 Client stastics catch:
 =====================
 
-#传递数据格式
+传递数据格式
 -dict
 -{
 -"mer": 内存使用百分比
@@ -11,7 +11,7 @@ Client stastics catch:
 -"iow": 总线写流量
 -}
 
-#程序配置：直接编辑config.py
+程序配置：直接编辑config.py
 -local_port: 本地监听端口
 -server_ip: 服务器ip
 -server_port: 服务器端口
