@@ -35,13 +35,17 @@ def getdaydata(name):
 	cursor = readarchiveddata(name,'day').limit(10)
 	p = {}
 	index = 0
+	n0 = {}
 	for i in cursor:
 		a = time.localtime(i['daytime'] * 3600 * 24)
 		n = str((a.tm_mon,a.tm_mday))[1:-1]
+		if n not in n0: 
+			n0[n] = index
+			index = index + 1
+		temp = n0[n]
 		for j in config.INFOS:
 			if j not in p:p[j] = {}
 			p[j][n] = [index * 11,DP.percentify(name,j,i[j])]
-			index = index + 1
 	return p
 #small funcs
 def forall(Zfunction,data):
