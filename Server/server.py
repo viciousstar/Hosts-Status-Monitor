@@ -71,11 +71,17 @@ class GetPostHandler(BaseHTTPRequestHandler):
             mainpage(self)
         elif 'graphic' in self.path:
             #(for ajax get)show one host's history info in two ways : 'day' and 'hour'
-            name=self.path.split('/')[3]
-            print name
+            
+            
             if 'hour' in self.path:
+                print self.path
+                name=self.path.split('/')[2]
+                print name
                 graphichour(self,name)
             else:
+                print self.path
+                name=self.path.split('/')[3]
+                print name
                 graphic(self,name)
         elif 'info' in self.path:
             #(for showing on explore) show one host's history infomation
@@ -88,7 +94,7 @@ class GetPostHandler(BaseHTTPRequestHandler):
             for content in fileHandle:
                 self.wfile.write(content)
             fileHandle.close()
-              
+
         #if someone watching
         for ip in allhostips:
             s = socket.socket()
@@ -133,7 +139,8 @@ def info(obj):
         name=obj.path.split('/')[2]
         content=content.replace('../tool','../../tool')
         content=content.replace('NAME',name)
-        content=content.replace('graphic','graphichour')
+        if 'hour' in obj.path:
+            content=content.replace('graphic','graphichour')
         obj.wfile.write(content)
     fileHandle.close()
 
@@ -160,7 +167,9 @@ def graphic(obj,name):
     '''return one host data for 10 days'''
     #testing data
     #obj.wfile.write('{cpu:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,80],"1.5":[50,70],"1.6":[60,40],"1.7":[70,20]},mem:{"1.1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
-    obj.wfile.write(getdaydata(name))
+    data=load.getdaydata(name)
+    print '!!!'+str(data)+'!!!'
+    obj.wfile.write(data)
     return
 
 def getname():
@@ -171,7 +180,9 @@ def getname():
 def graphichour(obj,name):
     '''return one host data for 10 hours'''
     #obj.wfile.write('{cpu:{"1":[10,50],".2":[20,30],".3":[30,40],".4":[40,80],".5":[50,70],".6":[60,40],".7":[70,20]},mem:{".1":[10,10],"1.2":[20,30],"1.3":[30,40],"1.5":[40,70],"1.6":[50,40]},ior:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40],"1.4":[40,30],"1.5":[50,40]},iow:{"1.1":[10,50],"1.2":[20,30],"1.3":[30,40]}}')
-    obj.wfile.write(load.gethourdata(name))
+    data=load.gethourdata(name)
+    print '!!!'+str(data)+'!!!'
+    obj.wfile.write(data)
     return
 
 if __name__ == '__main__':
