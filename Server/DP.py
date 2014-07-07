@@ -6,10 +6,10 @@
 import load
 
 defaults = {
-	'CPU': (0,100),
-	'IO_read' : (200000000,1000000000),
-	'IO_write': (200000000,1000000000),
-	'MainMemory': (10,100)
+	'cpu': (0,100),
+	'ior' : (200000000,1000000000),
+	'iow': (200000000,1000000000),
+	'mem': (10,100)
 }
 
 def percentify(name,column,value):

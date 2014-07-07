@@ -7,6 +7,7 @@ import pymongo
 import load
 import save
 import time
+import config
 
 db = pymongo.Connection('localhost',27017)['hoststatus']
 
@@ -24,10 +25,10 @@ def archiveall(x):
 	for k in load.getallname():
 		for i in load.popby(k,x,{'archivelabel':temp}):
 			for j in i:
-				for l in ['CPU','IO_write','IO_read','MainMemory']:
+				for l in config.INFOS:
 					p[l] = p.get(l,0) + j[l]
 					p[l,0] = p.get((l,0),0) + 1
-			for l in ['CPU','IO_write','IO_read','MainMemory']:
+			for l in configINFOS:
 				p[l] = p[l] / p[l,0]
 				p.pop((l,0))
 			p[x] = j[x]
