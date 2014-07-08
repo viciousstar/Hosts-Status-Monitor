@@ -19,21 +19,29 @@ def getcount(name):
 def gethourdata(name):
 	cursor = readarchiveddata(name,'hour').limit(10)
 	p = {}
-	for index,i in enumerate(cursor):
+	index = 0
+	n0 = {}
+	for i in cursor:
 		n = str(time.localtime(i['hourtime'] * 3600).tm_hour)
-		p[n] = {}
+		if n not in n0: 
+			n0[n] = index
+			index = index + 1
+		temp = n0[n]
 		for j in config.INFOS:
-			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
+			if j not in p:p[j] = {}
+			p[j][n] = [temp * 11,DP.percentify(name,j,i[j])]
 	return p
 def getdaydata(name):
 	cursor = readarchiveddata(name,'day').limit(10)
 	p = {}
-	for index,i in enumerate(cursor):
+	index = 0
+	for i in cursor:
 		a = time.localtime(i['daytime'] * 3600 * 24)
 		n = str((a.tm_mon,a.tm_mday))[1:-1]
-		p[n] = {}
 		for j in config.INFOS:
-			p[n][j] = [index * 11,DP.percentify(name,j,i[j])]
+			if j not in p:p[j] = {}
+			p[j][n] = [index * 11,DP.percentify(name,j,i[j])]
+			index = index + 1
 	return p
 #small funcs
 def forall(Zfunction,data):
